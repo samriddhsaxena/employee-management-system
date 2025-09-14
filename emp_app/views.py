@@ -1,5 +1,6 @@
 from django.shortcuts import render,HttpResponse
 from .models import Employees,Role,Department
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -27,7 +28,7 @@ def add_emp(request):
         role_id = request.POST.get('role')
         hire_date = request.POST.get('hire_data')
 
-        new_emp = Employees(first_name=first_name,last_name=last_name,salary=salary,bonus=bonus,phone=phone,dept_id=dept_id,role_id=role_id,hire_data=hire_date)
+        new_emp = Employees(first_name=first_name,last_name=last_name,salary=salary,bonus=bonus,phone=phone,dept_id=dept_id,role_id=role_id,hire_data=datetime.now())
         new_emp.save()
         return HttpResponse("Employee Added Successfully")
     elif request.method == 'GET':
@@ -35,8 +36,19 @@ def add_emp(request):
     else:
         return render("An exception occured")
 
-def remove_emp(request):
-    return render(request,'remove_emp.html')
+def remove_emp(request, emp_id=0):
+    if emp_id:
+        try:
+            emp_to_be_removed = Employees.objects.get(id=emp_id)
+            emp_to_be_removed.delete()
+            return HttpResponse("Employee Removed Successfully")
+        except:
+            return HttpResponse("Please enter a valid employee id")
+    emps = Employees.objects.all()
+    context = {
+        'emps':emps
+    }
+    return render(request,'remove_emp.html',context)
 
 def filter_emp(request):
     return render(request,'filter_emp.html')
