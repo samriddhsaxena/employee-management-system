@@ -1,0 +1,1 @@
+This repository contains a basic Django project for OFFICE EMPLOYEE MANAGEMENT SYSTSEM.
